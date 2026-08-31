@@ -17,10 +17,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use('/api', routes);
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
@@ -28,7 +26,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Error handler - must be last
 app.use(errorHandler);
 
 module.exports = app;
