@@ -1,7 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, Shield } from 'lucide-react';
 
 const Hero: React.FC = () => {
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<any[]>([]);
+
+  const handleSearch = async () => {
+    if (!from || !to) {
+      alert('Please enter both origin and destination');
+      return;
+    }
+
+    setLoading(true);
+    console.log('🔍 Searching:', { from, to });
+
+    try {
+      const response = await fetch('https://airtravlerr.onrender.com/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          origin: from,
+          destination: to,
+          departureDate: new Date().toISOString().split('T')[0]
+        })
+      });
+
+      const data = await response.json();
+      console.log('✅ Search results:', data);
+      
+      if (data.success) {
+        setResults(data.data);
+        alert(`Found ${data.data.length} flights! Check console for details.`);
+      } else {
+        alert('No flights found or error occurred');
+      }
+    } catch (error) {
+      console.error('❌ Search error:', error);
+      alert('Search failed. Check console for details.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50">
       <div className="absolute inset-0 opacity-10">
@@ -35,15 +79,23 @@ const Hero: React.FC = () => {
                 <input
                   type="text"
                   placeholder="From: City or Airport"
+                  value={from}
+                  onChange={(e) => setFrom(e.target.value)}
                   className="px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                 />
                 <input
                   type="text"
                   placeholder="To: City or Airport"
+                  value={to}
+                  onChange={(e) => setTo(e.target.value)}
                   className="px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                 />
-                <button className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-200 transition-all transform hover:scale-105 flex items-center justify-center space-x-2">
-                  <span>Search Flights</span>
+                <button 
+                  onClick={handleSearch}
+                  disabled={loading}
+                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-200 transition-all transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span>{loading ? 'Searching...' : 'Search Flights'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
