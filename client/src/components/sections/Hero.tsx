@@ -14,10 +14,13 @@ const Hero: React.FC = () => {
     }
 
     setLoading(true);
-    console.log('🔍 Searching:', { from, to });
+    setResults([]);
 
     try {
-      const response = await fetch('https://airtravlerr.onrender.com/api/search', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
+      console.log('🔍 Searching:', { from, to });
+      
+      const response = await fetch(`${apiUrl}/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,11 +35,11 @@ const Hero: React.FC = () => {
       const data = await response.json();
       console.log('✅ Search results:', data);
       
-      if (data.success) {
+      if (data.success && data.data) {
         setResults(data.data);
-        alert(`Found ${data.data.length} flights! Check console for details.`);
+        alert(`✅ Found ${data.data.length} flights! Check the page for details.`);
       } else {
-        alert('No flights found or error occurred');
+        alert('No flights found');
       }
     } catch (error) {
       console.error('❌ Search error:', error);
@@ -93,13 +96,35 @@ const Hero: React.FC = () => {
                 <button 
                   onClick={handleSearch}
                   disabled={loading}
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-200 transition-all transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-200 transition-all transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50"
                 >
                   <span>{loading ? 'Searching...' : 'Search Flights'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
+
+            {/* Display Results */}
+            {results.length > 0 && (
+              <div className="mt-4 space-y-3">
+                <h3 className="text-lg font-semibold text-gray-900">✈️ Available Flights</h3>
+                {results.map((flight, index) => (
+                  <div key={index} className="bg-white p-4 rounded-xl shadow-md border border-blue-100">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-gray-900">{flight.airline}</p>
+                        <p className="text-sm text-gray-500">{flight.flightNumber}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-blue-600">${flight.price}</p>
+                        <p className="text-sm text-gray-400 line-through">${flight.originalPrice}</p>
+                        <p className="text-sm text-green-600 font-medium">Save {flight.savings}%</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center space-x-2">
