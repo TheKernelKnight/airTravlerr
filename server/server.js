@@ -6,27 +6,19 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    console.log('🔄 Connecting to PostgreSQL...');
     await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
-    
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('✅ Database synced successfully.');
-    }
+    console.log('✅ Database connected successfully.');
+    await sequelize.sync({ alter: true });
+    console.log('✅ Database synced.');
     
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Database connection failed:', error.message);
-    console.log('⚠️  Make sure PostgreSQL is running: docker-compose up -d');
-    console.log('⚠️  Server starting without database...');
-    
+    console.error('❌ Database error:', error.message);
+    // Server still starts even without database
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT} (without database)`);
-      console.log(`📡 API endpoints available at http://localhost:${PORT}/api`);
+      console.log(`🚀 Server running on port ${PORT} (without DB)`);
     });
   }
 };
