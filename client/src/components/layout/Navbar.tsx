@@ -13,7 +13,12 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = ['Features', 'How It Works', 'Testimonials'];
+  const navLinks = [
+    { name: 'Features', href: '#features' },
+    { name: 'How It Works', href: '#how-it-works' },
+    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Admin', href: '/admin' }
+  ];
 
   return (
     <nav
@@ -23,30 +28,36 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center space-x-2">
+          {/* Logo */}
+          <a href="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center">
               <Plane className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">
               Air<span className="text-blue-600">Travelerr</span>
             </span>
-          </div>
+          </a>
 
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
+                key={link.name}
+                href={link.href}
                 className="text-gray-600 hover:text-blue-600 transition-colors font-medium text-sm"
               >
-                {link}
+                {link.name}
               </a>
             ))}
-            <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-sm hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg shadow-blue-200">
-              Get Started
-            </button>
+            <a
+              href="/admin"
+              className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-sm hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg shadow-blue-200"
+            >
+              Admin
+            </a>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -61,22 +72,27 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <div className="flex flex-col space-y-4">
               {navLinks.map((link) => (
                 <a
-                  key={link}
-                  href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
+                  key={link.name}
+                  href={link.href}
                   className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {link}
+                  {link.name}
                 </a>
               ))}
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-all w-full">
-                Get Started
-              </button>
+              <a
+                href="/admin"
+                className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-all text-center"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Admin
+              </a>
             </div>
           </div>
         )}
