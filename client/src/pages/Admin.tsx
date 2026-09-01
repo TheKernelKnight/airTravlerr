@@ -34,33 +34,36 @@ const Admin: React.FC = () => {
   };
 
   const fetchBookings = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
-      const response = await fetch(`${apiUrl}/bookings`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('📦 Bookings response:', data);
-      
-      if (data.success && data.data) {
-        setBookings(data.data);
-      } else {
-        setBookings([]);
-        setError('No bookings found or invalid response structure');
-      }
-    } catch (error) {
-      console.error('❌ Error fetching bookings:', error);
-      setError('Failed to fetch bookings. Please try again.');
-      setBookings([]);
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  setError('');
+  try {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
+    console.log('📡 Fetching from:', `${apiUrl}/bookings`);
+    
+    const response = await fetch(`${apiUrl}/bookings`);
+    console.log('📡 Response status:', response.status);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+    
+    const data = await response.json();
+    console.log('📦 Bookings response:', data);
+    
+    if (data.success && data.data) {
+      setBookings(data.data);
+    } else {
+      setBookings([]);
+      setError('No bookings found');
+    }
+  } catch (error) {
+    console.error('❌ Error fetching bookings:', error);
+    setError('Failed to fetch bookings. Please try again.');
+    setBookings([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!isAuthenticated) {
     return (

@@ -70,19 +70,28 @@ exports.createBooking = async (req, res) => {
   try {
     const { email, name, phone, flightData } = req.body;
 
+    if (!email || !name || !flightData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, name, and flight data are required'
+      });
+    }
+
+    // Find or create user
     let user = await User.findOne({ where: { email } });
     if (!user) {
       user = await User.create({ email, name, phone });
     }
 
+    // Create booking
     const booking = await Booking.create({
       userId: user.id,
-      origin: flightData.origin,
-      destination: flightData.destination,
-      departureDate: flightData.departureDate,
+      origin: flightData.origin || 'Unknown',
+      destination: flightData.destination || 'Unknown',
+      departureDate: flightData.departureDate || new Date(),
       returnDate: flightData.returnDate || null,
       cabinClass: flightData.cabinClass || 'business',
-      bookingLink: `https://airtravelerr.com/booking/${Date.now()}`
+      bookingLink: `https://airtravlerr.onrender.com/booking/${Date.now()}`
     });
 
     res.status(201).json({
@@ -107,9 +116,6 @@ exports.createBooking = async (req, res) => {
 
 exports.getAllBookings = async (req, res) => {
   try {
-    const Booking = require('../models/Booking');
-    const User = require('../models/User');
-    
     const bookings = await Booking.findAll({
       include: [{ model: User, attributes: ['id', 'email', 'name', 'phone'] }],
       order: [['createdAt', 'DESC']]

@@ -62,6 +62,7 @@ const Hero: React.FC = () => {
   try {
     const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
     console.log('🔍 Searching:', { from, to });
+    console.log('📡 API URL:', `${apiUrl}/search`);
     
     const response = await fetch(`${apiUrl}/search`, {
       method: 'POST',
@@ -75,6 +76,8 @@ const Hero: React.FC = () => {
       })
     });
 
+    console.log('📡 Response status:', response.status);
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
