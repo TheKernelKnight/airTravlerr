@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface Booking {
   id: string;
@@ -150,7 +150,7 @@ const Admin: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           booking.cabinClass === 'business' ? 'bg-purple-100 text-purple-800' :
-                          booking.cabinClass === 'first' ? 'bg-gold-100 text-gold-800' :
+                          booking.cabinClass === 'first' ? 'bg-amber-100 text-amber-800' :
                           'bg-blue-100 text-blue-800'
                         }`}>
                           {booking.cabinClass}
