@@ -35,14 +35,28 @@ const Admin: React.FC = () => {
 
   const fetchBookings = async () => {
     setLoading(true);
+    setError('');
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api'}/bookings`);
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
+      const response = await fetch(`${apiUrl}/bookings`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
-      if (data.success) {
+      console.log('📦 Bookings response:', data);
+      
+      if (data.success && data.data) {
         setBookings(data.data);
+      } else {
+        setBookings([]);
+        setError('No bookings found or invalid response structure');
       }
     } catch (error) {
-      console.error('Error fetching bookings:', error);
+      console.error('❌ Error fetching bookings:', error);
+      setError('Failed to fetch bookings. Please try again.');
+      setBookings([]);
     } finally {
       setLoading(false);
     }
@@ -92,6 +106,18 @@ const Admin: React.FC = () => {
           </button>
         </div>
 
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+            {error}
+            <button
+              onClick={fetchBookings}
+              className="ml-4 text-sm underline hover:no-underline"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow">
             <p className="text-gray-500 text-sm">Total Bookings</p>
@@ -115,6 +141,11 @@ const Admin: React.FC = () => {
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent"></div>
             <p className="mt-2 text-gray-500">Loading bookings...</p>
+          </div>
+        ) : bookings.length === 0 ? (
+          <div className="bg-white rounded-xl shadow p-12 text-center">
+            <p className="text-gray-500">No bookings found</p>
+            <p className="text-sm text-gray-400 mt-2">Bookings will appear here once users book flights</p>
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow overflow-hidden">

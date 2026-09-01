@@ -50,48 +50,54 @@ const Hero: React.FC = () => {
   }, [to]);
 
   const handleSearch = async () => {
-    if (!from || !to) {
-      alert('Please enter both origin and destination');
-      return;
+  if (!from || !to) {
+    alert('Please enter both origin and destination');
+    return;
+  }
+
+  setLoading(true);
+  setResults([]);
+  setShowResults(false);
+
+  try {
+    const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
+    console.log('🔍 Searching:', { from, to });
+    
+    const response = await fetch(`${apiUrl}/search`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        origin: from,
+        destination: to,
+        departureDate: new Date().toISOString().split('T')[0]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    setLoading(true);
-    setShowResults(false);
-
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
-      
-      const response = await fetch(`${apiUrl}/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          origin: from,
-          destination: to,
-          departureDate: new Date().toISOString().split('T')[0]
-        })
-      });
-
-      const data = await response.json();
-      console.log('✅ Search results:', data);
-      
-      const flights = data.data || data.flights || [];
-      
-      if (flights.length > 0) {
-        setResults(flights);
-        setShowResults(true);
-        alert(`✅ Found ${flights.length} flights!`);
-      } else {
-        alert('No flights found for this route');
-      }
-    } catch (error) {
-      console.error('❌ Search error:', error);
-      alert('Search failed. Check console.');
-    } finally {
-      setLoading(false);
+    const data = await response.json();
+    console.log('✅ Search response:', data);
+    
+    const flights = data.data || data.flights || [];
+    
+    if (flights.length > 0) {
+      setResults(flights);
+      setShowResults(true);
+      alert(`✅ Found ${flights.length} flights!`);
+    } else {
+      alert('No flights found for this route');
     }
-  };
+  } catch (error) {
+    console.error('❌ Search error:', error);
+    alert('Search failed. Please check console for details.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleBookFlight = (flight: any) => {
     const name = prompt('Enter your full name:');

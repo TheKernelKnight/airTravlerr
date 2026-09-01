@@ -104,3 +104,23 @@ exports.createBooking = async (req, res) => {
     });
   }
 };
+
+exports.getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.findAll({
+      include: [{ model: User, attributes: ['id', 'email', 'name', 'phone'] }],
+      order: [['createdAt', 'DESC']]
+    });
+    
+    res.status(200).json({
+      success: true,
+      data: bookings
+    });
+  } catch (error) {
+    console.error('Get bookings error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bookings'
+    });
+  }
+};

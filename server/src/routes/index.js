@@ -11,6 +11,7 @@ router.get('/health', (req, res) => {
 // Search routes
 router.post('/search', searchController.searchFlights);
 router.post('/booking', searchController.createBooking);
+router.get('/bookings', searchController.getAllBookings); // Add this line
 
 // Newsletter
 router.post('/newsletter/subscribe', newsletterController.subscribe);
