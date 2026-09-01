@@ -37,7 +37,7 @@ const Admin: React.FC = () => {
   setLoading(true);
   setError('');
   try {
-    const apiUrl = import.meta.env.VITE_API_URL || 'https://airtravlerr.onrender.com/api';
+    const apiUrl = 'https://airtravlerr.onrender.com/api';
     console.log('📡 Fetching from:', `${apiUrl}/bookings`);
     
     const response = await fetch(`${apiUrl}/bookings`);
