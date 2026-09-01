@@ -107,6 +107,9 @@ exports.createBooking = async (req, res) => {
 
 exports.getAllBookings = async (req, res) => {
   try {
+    const Booking = require('../models/Booking');
+    const User = require('../models/User');
+    
     const bookings = await Booking.findAll({
       include: [{ model: User, attributes: ['id', 'email', 'name', 'phone'] }],
       order: [['createdAt', 'DESC']]

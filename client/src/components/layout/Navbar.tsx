@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Plane } from 'lucide-react';
 
 const Navbar: React.FC = () => {
@@ -17,7 +18,6 @@ const Navbar: React.FC = () => {
     { name: 'Features', href: '#features' },
     { name: 'How It Works', href: '#how-it-works' },
     { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Admin', href: '/admin' }
   ];
 
   return (
@@ -29,14 +29,14 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-400 rounded-xl flex items-center justify-center">
               <Plane className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">
               Air<span className="text-blue-600">Travelerr</span>
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -49,12 +49,12 @@ const Navbar: React.FC = () => {
                 {link.name}
               </a>
             ))}
-            <a
-              href="/admin"
+            <Link
+              to="/admin"
               className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-medium text-sm hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg shadow-blue-200"
             >
               Admin
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -86,13 +86,13 @@ const Navbar: React.FC = () => {
                   {link.name}
                 </a>
               ))}
-              <a
-                href="/admin"
+              <Link
+                to="/admin"
                 className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-all text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Admin
-              </a>
+              </Link>
             </div>
           </div>
         )}
